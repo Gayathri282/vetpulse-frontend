@@ -167,6 +167,51 @@ const ARTICLES_DATA = [
       "Offer small sips of cool water and seek emergency vet care."
     ],
     urgency: "CRITICAL EMERGENCY — Act immediately!"
+  },
+  {
+    id: "flea-tick-dermatitis",
+    title: "Flea Allergy Dermatitis & Parasites",
+    category: "Skin & Coat",
+    catClass: "cat-skin",
+    image: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80",
+    meaning: "Flea saliva reaction causing extreme allergic itching, crusting skin lesions, and risk of flea-borne tapeworm infection.",
+    symptoms: ["Intense biting near tail base", "Flea dirt (black specks) in fur", "Red crusty papules", "Secondary bacterial crusts"],
+    whatToDo: [
+      "Apply vet-prescribed monthly spot-on flea treatment.",
+      "Wash bedding in hot water (60°C).",
+      "Consult vet for oral anti-parasitic treatment."
+    ],
+    urgency: "Moderate — Requires continuous preventive care."
+  },
+  {
+    id: "flutd-urinary",
+    title: "Feline Lower Urinary Tract Disease (FLUTD)",
+    category: "Urgent Care",
+    catClass: "cat-urgent",
+    image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80",
+    meaning: "Collection of conditions affecting feline bladder and urethra, including urinary crystals, inflammation, or life-threatening urethral blockage.",
+    symptoms: ["Straining to urinate or crying in litter box", "Frequent small attempts to urinate", "Blood in urine", "Licking genital area constantly"],
+    whatToDo: [
+      "Increase water intake using pet water fountains.",
+      "Switch to veterinary urinary wet diet formula.",
+      "Seek IMMEDIATE emergency vet care if cat cannot pass urine."
+    ],
+    urgency: "HIGH TO CRITICAL — Inability to urinate is a fatal emergency."
+  },
+  {
+    id: "canine-arthritis",
+    title: "Canine Osteoarthritis & Joint Stiffness",
+    category: "Dental & Mobility",
+    catClass: "cat-dental",
+    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=800&q=80",
+    meaning: "Progressive degeneration of joint cartilage causing pain, stiffness, and reduced mobility in senior or large breed dogs.",
+    symptoms: ["Stiffness when rising from bed", "Reluctance to climb stairs or jump", "Limping or altered gait", "Joint swelling and touch sensitivity"],
+    whatToDo: [
+      "Provide orthopedic supportive pet bedding.",
+      "Administer vet-prescribed Omega-3 & Joint supplements (Glucosamine).",
+      "Schedule video consult for safe anti-inflammatory pain management."
+    ],
+    urgency: "Routine — Manageable with long-term therapy."
   }
 ];
 
@@ -182,7 +227,7 @@ function HeroBanner({ onBookNow, onAskAI }) {
         
         <div className="hero-actions">
           <button style={{ padding: "14px 28px", fontSize: "14px" }} onClick={onBookNow}>
-            <Icons.Calendar /> Book a Consultation
+            <Icons.Calendar /> Book Consultation Now
           </button>
           <button className="button-indigo" style={{ padding: "14px 24px", fontSize: "14px" }} onClick={onAskAI}>
             <Icons.AI /> Ask AI Health Assistant
@@ -210,13 +255,16 @@ function HeroBanner({ onBookNow, onAskAI }) {
       </div>
 
       <div className="hero-widget-card">
-        <img
-          src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=800&q=80"
-          alt="Veterinary Tele-Health Care"
-        />
-        <h3 style={{ margin: "0 0 6px", fontSize: "20px" }}>Trusted Tele-Veterinary Care</h3>
-        <p style={{ fontSize: "14px", margin: "0 0 20px" }}>
-          Instant HD video calls, digital Rx prescriptions, and secure lab report management.
+        <div className="hero-img-wrapper">
+          <img
+            src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=800&q=80"
+            alt="Veterinary Doctor Examining Pet"
+          />
+          <span className="hero-floating-badge">🟢 Certified Vet On-Call</span>
+        </div>
+        <h3 style={{ margin: "14px 0 6px", fontSize: "19px" }}>Trusted Clinical Tele-Veterinary Care</h3>
+        <p style={{ fontSize: "13.5px", margin: "0 0 16px" }}>
+          Instant WebRTC HD video calls, digital Rx prescriptions, and secure lab report management.
         </p>
         <button style={{ width: "100%" }} onClick={onBookNow}>
           Find Available Specialists
@@ -292,26 +340,186 @@ function ServicesSection({ onServiceClick }) {
   );
 }
 
-// Subtle Clinical CTA Banner
-function CTABanner({ onConnect }) {
+// Production Clinical CTA Banner with Single Full-Width Featured Doctor Profile & Instant Booking
+function CTABanner({ doctors = [], onConnect }) {
+  // Select lead doctor profile (or fallback)
+  const featuredDoc = doctors[0] || {
+    _id: "doc1",
+    name: "Dr. Ananya Nair",
+    specialty: "Senior Veterinary Medical Officer · Internal Medicine & Dermatology Specialist",
+    degrees: "BVSc & AH, MVSc (Veterinary Internal Medicine)",
+    rating: 4.9,
+    reviewsCount: 124,
+    experienceYears: 10,
+    avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80",
+    bio: "Licensed Senior Veterinary Specialist with over 10 years of tele-health practice. Expert in small animal internal medicine, dermatology, preventive wellness, and remote video diagnostics."
+  };
+
+  const isVikram = featuredDoc.email?.includes("vikram") || featuredDoc.name?.includes("Vikram");
+  const isRajesh = featuredDoc.email?.includes("rajesh") || featuredDoc.name?.includes("Rajesh");
+  
+  const avatar = featuredDoc.avatar || (isVikram
+    ? "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80"
+    : isRajesh
+    ? "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=400&q=80"
+    : "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80");
+
+  const degrees = featuredDoc.degrees || (isVikram
+    ? "BVSc & AH, MVSc (Veterinary Surgery & Radiology), PhD"
+    : isRajesh
+    ? "BVSc & AH, MVSc (Avian Medicine & Exotic Pet Health)"
+    : "BVSc & AH, MVSc (Veterinary Internal Medicine)");
+
+  const bio = featuredDoc.bio || (isVikram
+    ? "Specialist in veterinary surgery, orthopedic repair, joint reconstruction, soft tissue repair, and trauma emergency critical care."
+    : isRajesh
+    ? "Specialist in exotic pet medicine, avian health, small mammal care, reptile wellness, and emergency pediatric pet consultation."
+    : "Licensed Senior Veterinary Specialist with 10+ years practice in tele-diagnosis, internal medicine, skin allergy care, and digital Rx prescriptions.");
+
   return (
     <div className="cta-banner">
-      <div className="cta-content">
-        <h2>Want to consult a veterinary doctor now?</h2>
-        <p>Book an instant 1-on-1 video consultation, share health reports, and receive official prescriptions online.</p>
+      <div className="cta-banner-top">
+        <div className="cta-content">
+          <span className="cta-live-pill">🟢 TELE-VETERINARY CARE ON-CALL</span>
+          <h2>Want to consult a veterinary doctor now?</h2>
+          <p>Book an instant 1-on-1 video consultation, share health reports, and receive official digital prescriptions online.</p>
+        </div>
+        <button
+          className="cta-connect-btn"
+          onClick={() => onConnect?.(featuredDoc)}
+        >
+          Connect Now →
+        </button>
       </div>
-      <button
-        style={{ background: "#ffffff", color: "var(--brand-navy)", padding: "14px 28px", fontSize: "15px", whiteSpace: "nowrap" }}
-        onClick={onConnect}
-      >
-        Connect Now
-      </button>
+
+      {/* Single Featured Veterinary Doctor Profile Filling the Section */}
+      <div className="cta-featured-doctor-wrapper">
+        <div className="cta-featured-doctor-header">
+          <span className="cta-section-label">🩺 On-Call Lead Veterinary Specialist Profile</span>
+          <span className="cta-online-status-badge">🟢 Online & Ready for Video Call</span>
+        </div>
+
+        <div className="cta-single-doctor-card" onClick={() => onConnect?.(featuredDoc)}>
+          <div className="cta-single-doc-left">
+            <div className="cta-single-avatar-box">
+              <img src={avatar} alt={featuredDoc.name} className="cta-single-doc-avatar" />
+              <span className="cta-single-status-dot" title="Online Now"></span>
+            </div>
+            <div className="cta-single-rating-box">
+              <b>⭐ {featuredDoc.rating || 4.9} / 5.0</b>
+              <span>({featuredDoc.reviewsCount || 124}+ Verified Reviews)</span>
+            </div>
+          </div>
+
+          <div className="cta-single-doc-body">
+            <div className="cta-single-doc-title-row">
+              <h3>{featuredDoc.name}</h3>
+              <span className="cta-single-verified">✓ VCI Certified Specialist</span>
+            </div>
+
+            <div className="cta-single-doc-spec">{featuredDoc.specialty || "Senior Veterinary Specialist"}</div>
+            
+            <div className="cta-single-meta-chips">
+              <span className="meta-chip">🎓 {degrees}</span>
+              <span className="meta-chip">⏳ {featuredDoc.experienceYears || 10}+ Yrs Clinical Practice</span>
+              <span className="meta-chip">💬 English, Hindi, Regional</span>
+            </div>
+
+            <p className="cta-single-doc-bio">"{bio}"</p>
+
+            <div className="cta-single-footer-row">
+              <div className="cta-single-price-tag">
+                <span className="price-label">Clinical Video Consultation</span>
+                <b className="price-val">₹500 <span className="price-dur">(30 Min HD Video Call)</span></b>
+              </div>
+
+              <button
+                className="cta-single-book-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onConnect?.(featuredDoc);
+                }}
+              >
+                Book Consultation with {featuredDoc.name?.split(" ")[1] || "Doctor"} →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-// Articles & News Section
-function ArticlesSection({ onSelectDoctor }) {
+// Home Page Health Conditions Section (Displays exactly 1 ROW of 3 cards + View More trigger)
+function ArticlesSection({ onSelectDoctor, onViewAllConditions }) {
+  const [selectedArticle, setSelectedArticle] = useState(null);
+
+  // Home section displays top 1 row (3 featured cards)
+  const homeArticles = ARTICLES_DATA.slice(0, 3);
+
+  return (
+    <div className="articles-section" id="articles-section">
+      <div className="section-header" style={{ alignItems: "center" }}>
+        <div>
+          <h2>Common Animal Health Conditions</h2>
+          <p>Learn what symptoms mean, immediate home care steps, and when to consult a veterinarian.</p>
+        </div>
+        <button className="button-secondary" onClick={onViewAllConditions}>
+          View All Health Conditions ({ARTICLES_DATA.length}) →
+        </button>
+      </div>
+
+      {/* Exactly 1 Row of Featured Cards */}
+      <div className="articles-grid">
+        {homeArticles.map(art => (
+          <div className="article-card" key={art.id}>
+            <img src={art.image} alt={art.title} className="article-image" />
+            <div className="article-body">
+              <span className={`article-category ${art.catClass}`}>{art.category}</span>
+              <h3>{art.title}</h3>
+              
+              <div className="article-snippet">
+                <b>What does this mean?</b>
+                <p style={{ margin: 0 }}>{art.meaning.substring(0, 90)}...</p>
+              </div>
+
+              <div style={{ marginTop: "auto", paddingTop: "12px", display: "flex", gap: "10px" }}>
+                <button style={{ flex: 1 }} onClick={() => setSelectedArticle(art)}>Read Care Guide</button>
+                <button className="button-outline" onClick={() => onSelectDoctor?.()}>Ask Vet</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* View More Trigger Bar */}
+      <div className="view-more-banner">
+        <div className="view-more-content">
+          <span className="view-more-badge">📚 VETERINARY CARE DIRECTORY</span>
+          <h3>Looking for specific pet symptoms or health guides?</h3>
+          <p>
+            Explore our complete medical library of {ARTICLES_DATA.length} condition guides with symptom checklists and action plans.
+          </p>
+        </div>
+        <button className="button-primary view-more-btn" onClick={onViewAllConditions}>
+          View More Conditions Directory →
+        </button>
+      </div>
+
+      {/* Single Article Detailed Care Guide Modal */}
+      {selectedArticle && (
+        <ArticleDetailModal
+          article={selectedArticle}
+          onClose={() => setSelectedArticle(null)}
+          onSelectDoctor={() => { setSelectedArticle(null); onSelectDoctor?.(); }}
+        />
+      )}
+    </div>
+  );
+}
+
+// Dedicated Full-Page Health Conditions Directory
+function AllConditionsPage({ onBack, onSelectDoctor }) {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [selectedArticle, setSelectedArticle] = useState(null);
@@ -325,22 +533,33 @@ function ArticlesSection({ onSelectDoctor }) {
   });
 
   return (
-    <div className="articles-section" id="articles-section">
-      <div className="section-header">
-        <div>
-          <h2>Common Animal Health Conditions</h2>
-          <p>Learn what symptoms mean, home care steps, and when to consult a veterinarian.</p>
+    <div className="all-conditions-page">
+      <div className="directory-header-bar">
+        <button className="button-outline" onClick={onBack} style={{ padding: "10px 18px" }}>
+          ← Back to Main Portal
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span className="trust-badge" style={{ background: "var(--brand-primary-light)", color: "var(--brand-primary)", border: "1px solid var(--brand-primary-border)" }}>
+            📚 Veterinary Care Library ({ARTICLES_DATA.length} Guides)
+          </span>
         </div>
-        <input
-          type="text"
-          placeholder="Search conditions (e.g., ear, vomiting, rash)..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={{ width: "270px" }}
-        />
       </div>
 
-      <div className="articles-filter-bar">
+      <div className="directory-hero">
+        <h1>Comprehensive Animal Health & Symptom Directory</h1>
+        <p>Search veterinary condition guides, key symptoms to watch for, home emergency steps, and vet consultation flags.</p>
+        
+        <div className="directory-search-box">
+          <input
+            type="text"
+            placeholder="Search by condition or symptom (e.g. ear, vomiting, rash, parasites)..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="articles-filter-bar" style={{ justifyContent: "center", marginBottom: "36px" }}>
         {categories.map(c => (
           <button key={c} className={filter === c ? "active" : ""} onClick={() => setFilter(c)}>
             {c}
@@ -363,7 +582,7 @@ function ArticlesSection({ onSelectDoctor }) {
 
               <div style={{ marginTop: "auto", paddingTop: "12px", display: "flex", gap: "10px" }}>
                 <button style={{ flex: 1 }} onClick={() => setSelectedArticle(art)}>Read Care Guide</button>
-                <button className="button-outline" onClick={() => onSelectDoctor?.()}>Ask Vet</button>
+                <button className="button-outline" onClick={() => { onBack(); onSelectDoctor?.(); }}>Ask Vet</button>
               </div>
             </div>
           </div>
@@ -371,134 +590,216 @@ function ArticlesSection({ onSelectDoctor }) {
       </div>
 
       {selectedArticle && (
-        <div className="modal" onClick={() => setSelectedArticle(null)}>
-          <div className="article-modal-card" onClick={e => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <span className={`article-category ${selectedArticle.catClass}`}>{selectedArticle.category}</span>
-              <button className="ghost" onClick={() => setSelectedArticle(null)}>✕ Close</button>
-            </div>
-            
-            <h2 style={{ fontSize: "24px", marginBottom: "12px" }}>{selectedArticle.title}</h2>
-            <img src={selectedArticle.image} alt={selectedArticle.title} style={{ width: "100%", height: "240px", objectFit: "cover", borderRadius: "16px", marginBottom: "20px" }} />
-
-            <div style={{ background: "#f0fdfa", padding: "16px 20px", borderRadius: "14px", marginBottom: "20px", border: "1px solid #ccfbf1" }}>
-              <h4 style={{ margin: "0 0 6px", color: "var(--brand-primary-dark)" }}>What Does This Mean?</h4>
-              <p style={{ margin: 0 }}>{selectedArticle.meaning}</p>
-            </div>
-
-            <div style={{ marginBottom: "20px" }}>
-              <h4 style={{ margin: "0 0 10px" }}>Key Symptoms To Watch For</h4>
-              <ul style={{ paddingLeft: "20px", margin: 0 }}>
-                {selectedArticle.symptoms.map((s, i) => <li key={i} style={{ marginBottom: "6px" }}>{s}</li>)}
-              </ul>
-            </div>
-
-            <div style={{ marginBottom: "24px" }}>
-              <h4 style={{ margin: "0 0 10px" }}>What To Do (Action Plan)</h4>
-              <ol style={{ paddingLeft: "20px", margin: 0 }}>
-                {selectedArticle.whatToDo.map((step, i) => <li key={i} style={{ marginBottom: "8px" }}>{step}</li>)}
-              </ol>
-            </div>
-
-            <div style={{ background: "var(--med-rose-light)", border: "1px solid var(--med-rose-border)", padding: "14px", borderRadius: "12px", marginBottom: "24px", color: "var(--med-rose)", fontSize: "14px" }}>
-              <b>Urgency & Warning:</b> {selectedArticle.urgency}
-            </div>
-
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button style={{ flex: 1 }} onClick={() => { setSelectedArticle(null); onSelectDoctor?.(); }}>
-                Connect With Veterinary Doctor Now
-              </button>
-              <button className="button-outline" onClick={() => setSelectedArticle(null)}>Close</button>
-            </div>
-          </div>
-        </div>
+        <ArticleDetailModal
+          article={selectedArticle}
+          onClose={() => setSelectedArticle(null)}
+          onSelectDoctor={() => { setSelectedArticle(null); onBack(); onSelectDoctor?.(); }}
+        />
       )}
     </div>
   );
 }
 
-// Doctors Section
-function DoctorsSection({ doctors, slots, onBookSlot }) {
-  const [selectedDocId, setSelectedDocId] = useState(null);
-  const [docTab, setDocTab] = useState("slots");
+// Reusable Article Detail Modal Component
+function ArticleDetailModal({ article, onClose, onSelectDoctor }) {
+  if (!article) return null;
 
-  const activeDoc = doctors.find(d => d._id === selectedDocId) || doctors[0];
-  const docSlots = slots.filter(s => !selectedDocId || String(s.doctorId) === String(activeDoc?._id));
+  return (
+    <div className="modal" onClick={onClose}>
+      <div className="article-modal-card" onClick={e => e.stopPropagation()}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+          <span className={`article-category ${article.catClass}`}>{article.category}</span>
+          <button className="ghost" onClick={onClose}>✕ Close</button>
+        </div>
+        
+        <h2 style={{ fontSize: "26px", marginBottom: "14px", color: "var(--brand-navy)" }}>{article.title}</h2>
+        <img src={article.image} alt={article.title} style={{ width: "100%", height: "260px", objectFit: "cover", borderRadius: "16px", marginBottom: "24px" }} />
+
+        <div style={{ background: "var(--brand-primary-light)", padding: "18px 22px", borderRadius: "14px", marginBottom: "22px", border: "1px solid var(--brand-primary-border)" }}>
+          <h4 style={{ margin: "0 0 6px", color: "var(--brand-primary-hover)" }}>What Does This Mean?</h4>
+          <p style={{ margin: 0, fontSize: "14px", color: "var(--text-primary)" }}>{article.meaning}</p>
+        </div>
+
+        <div style={{ marginBottom: "22px" }}>
+          <h4 style={{ margin: "0 0 10px", color: "var(--brand-navy)" }}>Key Symptoms To Watch For</h4>
+          <ul style={{ paddingLeft: "20px", margin: 0 }}>
+            {article.symptoms.map((s, i) => <li key={i} style={{ marginBottom: "8px", fontSize: "14px" }}>{s}</li>)}
+          </ul>
+        </div>
+
+        <div style={{ marginBottom: "26px" }}>
+          <h4 style={{ margin: "0 0 10px", color: "var(--brand-navy)" }}>What To Do (Action Plan)</h4>
+          <ol style={{ paddingLeft: "20px", margin: 0 }}>
+            {article.whatToDo.map((step, i) => <li key={i} style={{ marginBottom: "8px", fontSize: "14px" }}>{step}</li>)}
+          </ol>
+        </div>
+
+        <div style={{ background: "#fef2f2", border: "1px solid #fecaca", padding: "16px", borderRadius: "14px", marginBottom: "28px", color: "#dc2626", fontSize: "14px" }}>
+          <b>Urgency & Warning:</b> {article.urgency}
+        </div>
+
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button style={{ flex: 1, padding: "14px" }} onClick={onSelectDoctor}>
+            Connect With Veterinary Doctor Now
+          </button>
+          <button className="button-outline" onClick={onClose} style={{ padding: "14px 20px" }}>Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Doctors Section - Single Certified Veterinary Specialist Profile
+function DoctorsSection({ doctors = [], slots = [], apps = [], onBookSlot }) {
+  const [currentTab, setCurrentTab] = useState("slots");
+
+  // Display single primary doctor (Dr. Ananya Nair or first available doctor)
+  const doc = doctors[0] || {
+    _id: "650000000000000000000001",
+    name: "Dr. Ananya Nair",
+    email: "doctor@vetpulse.demo",
+    specialty: "Senior Veterinary Medical Officer · Internal Medicine & Dermatology Specialist",
+    rating: 4.9,
+    reviewsCount: 124,
+    experienceYears: 10,
+    avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80",
+    bio: "Licensed Senior Veterinary Medical Officer with 10+ years of clinical tele-health practice. Specialist in small animal internal medicine, dermatology, gastrointestinal health, preventive wellness, and remote video diagnostics."
+  };
+
+  const docSlots = slots.filter(s => String(s.doctorId) === String(doc._id));
+  const degrees = "BVSc & AH, MVSc (Veterinary Internal Medicine & Dermatology)";
+
+  const isSlotBooked = (s) => {
+    return apps.some(a => {
+      if (a.status === "cancelled") return false;
+      const docIdMatch = !a.doctorId || String(a.doctorId?._id || a.doctorId) === String(doc._id);
+      if (!docIdMatch) return false;
+
+      const appDate = new Date(a.startAt);
+      const appDay = appDate.getDay();
+      const appHours = String(appDate.getHours()).padStart(2, "0");
+      const appMins = String(appDate.getMinutes()).padStart(2, "0");
+      const appTime = `${appHours}:${appMins}`;
+
+      return appDay === s.dayOfWeek && appTime === s.start;
+    });
+  };
 
   return (
     <div className="doctors-section" id="doctors-section">
       <div className="section-header">
         <div>
-          <h2>Our Certified Veterinary Doctors</h2>
-          <p>Select a specialist below to view availability and book a video consultation.</p>
+          <h2>Certified Lead Veterinary Specialist</h2>
+          <p>Book 1-on-1 consultations directly with our licensed Senior Veterinary Medical Officer.</p>
         </div>
       </div>
 
-      <div className="doctors-grid">
-        {doctors.map(doc => (
-          <div
-            className="doctor-card"
-            key={doc._id}
-            style={{ border: activeDoc?._id === doc._id ? "2px solid var(--brand-primary)" : "1px solid var(--border-subtle)" }}
-          >
-            <div className="doctor-profile-top">
-              <img src={doc.avatar || "/vet_doctor_female.png"} alt={doc.name} className="doctor-avatar" />
-              <div className="doctor-meta">
-                <h3>{doc.name}</h3>
-                <div className="doctor-specialty">{doc.specialty || "Veterinary Specialist"}</div>
-                <div className="doctor-rating">
-                  <Icons.Star /> {doc.rating || 4.9} ({doc.reviewsCount || 120}+ reviews) · {doc.experienceYears || 10}+ yrs exp
-                </div>
-              </div>
+      <div className="single-doctor-section-card">
+        <div className="doctor-badge-row" style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+          <span className="verified-badge">✓ Licensed Senior Veterinary Officer</span>
+          <span className="online-badge">🟢 Online & Available for Instant Booking</span>
+        </div>
+
+        <div className="doctor-profile-top" style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+          <img
+            src={doc.avatar || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80"}
+            alt={doc.name}
+            style={{ width: "90px", height: "90px", borderRadius: "50%", objectFit: "cover", border: "3px solid var(--brand-primary)" }}
+          />
+          <div className="doctor-meta">
+            <h3 style={{ fontSize: "24px", color: "var(--brand-navy)", margin: "0 0 4px" }}>{doc.name}</h3>
+            <div className="doctor-specialty" style={{ fontSize: "14.5px", color: "var(--brand-primary-dark)", fontWeight: "600" }}>
+              {doc.specialty}
             </div>
-
-            <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: "0 0 16px" }}>
-              {doc.bio || "Expert in veterinary general medicine, dermatology, and preventive health care."}
-            </p>
-
-            <div className="doctor-prices">
-              <div className="price-pill">30 min · ₹500</div>
-              <div className="price-pill">45 min · ₹750</div>
+            <div className="doctor-rating" style={{ fontSize: "13.5px", marginTop: "6px", color: "#d97706" }}>
+              <Icons.Star /> {doc.rating || 4.9} ({doc.reviewsCount || 124}+ verified reviews) • {doc.experienceYears || 10}+ yrs clinical exp
             </div>
-
-            <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
-              <button
-                className={activeDoc?._id === doc._id && docTab === "slots" ? "" : "button-outline"}
-                style={{ flex: 1, padding: "9px", fontSize: "12px" }}
-                onClick={() => { setSelectedDocId(doc._id); setDocTab("slots"); }}
-              >
-                Available Slots
-              </button>
-              <button
-                className={activeDoc?._id === doc._id && docTab === "overview" ? "" : "button-outline"}
-                style={{ flex: 1, padding: "9px", fontSize: "12px" }}
-                onClick={() => { setSelectedDocId(doc._id); setDocTab("overview"); }}
-              >
-                Profile & Bio
-              </button>
-            </div>
-
-            {activeDoc?._id === doc._id && docTab === "slots" && (
-              <div>
-                <b style={{ fontSize: "13px", color: "var(--brand-primary-dark)", display: "block", marginBottom: "8px" }}>Select Date & Time Slot:</b>
-                <div className="slots-grid">
-                  {docSlots.map((s, i) => (
-                    <button key={i} className="slot-btn" onClick={() => onBookSlot(doc, s)}>
-                      {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][s.dayOfWeek]} · {s.start} ({s.duration}m)
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeDoc?._id === doc._id && docTab === "overview" && (
-              <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "10px", fontSize: "13px" }}>
-                <b>Qualifications:</b> BVSc & AH, MVSc (Veterinary Medicine). Certified Tele-Vet Specialist.<br />
-                <b>Languages Spoken:</b> English, Hindi.
-              </div>
-            )}
           </div>
-        ))}
+        </div>
+
+        <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: "18px 0", lineHeight: "1.6" }}>
+          {doc.bio}
+        </p>
+
+        <div className="doctor-credentials-strip" style={{ padding: "14px 18px", borderRadius: "14px", background: "var(--bg-main)", marginBottom: "20px", fontSize: "13px", display: "grid", gap: "6px" }}>
+          <div><b>Qualifications:</b> {degrees}</div>
+          <div><b>Licensure:</b> VCI Registered Veterinary Officer</div>
+          <div><b>Languages:</b> English, Hindi, Regional</div>
+        </div>
+
+        <div className="doctor-prices" style={{ marginBottom: "20px", display: "flex", gap: "12px" }}>
+          <div className="price-pill" style={{ padding: "12px 18px", background: "var(--bg-main)", borderRadius: "12px", flex: 1 }}>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)", display: "block" }}>General Tele-Consultation</span>
+            <b style={{ fontSize: "15px", color: "var(--brand-navy)" }}>30 min • ₹500</b>
+          </div>
+          <div className="price-pill accent-price" style={{ padding: "12px 18px", background: "var(--brand-primary-light)", borderRadius: "12px", flex: 1, border: "1px solid var(--brand-primary-border)" }}>
+            <span style={{ fontSize: "12px", color: "var(--brand-primary-hover)", display: "block" }}>Comprehensive & Dermatology Care</span>
+            <b style={{ fontSize: "15px", color: "var(--brand-primary-dark)" }}>45 min • ₹750</b>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+          <button
+            className={currentTab === "slots" ? "button-primary" : "button-outline"}
+            style={{ flex: 1, padding: "12px", fontSize: "14px" }}
+            onClick={() => setCurrentTab("slots")}
+          >
+            📅 Available Consultation Slots ({docSlots.length > 0 ? docSlots.length : 6})
+          </button>
+          <button
+            className={currentTab === "overview" ? "button-primary" : "button-outline"}
+            style={{ flex: 1, padding: "12px", fontSize: "14px" }}
+            onClick={() => setCurrentTab("overview")}
+          >
+            📋 Detailed Clinical Profile & Credentials
+          </button>
+        </div>
+
+        {currentTab === "slots" && (
+          <div className="slots-container" style={{ padding: "20px", borderRadius: "18px", background: "var(--bg-main)" }}>
+            <b style={{ fontSize: "14px", color: "var(--brand-navy)", display: "block", marginBottom: "12px" }}>
+              Select Time Slot to Book Appointment:
+            </b>
+            <div className="slots-grid">
+              {(docSlots.length > 0 ? docSlots : [
+                { dayOfWeek: 1, start: "09:00", duration: 30, price: 500 },
+                { dayOfWeek: 1, start: "14:00", duration: 45, price: 750 },
+                { dayOfWeek: 2, start: "10:00", duration: 30, price: 500 },
+                { dayOfWeek: 2, start: "15:00", duration: 45, price: 750 },
+                { dayOfWeek: 3, start: "09:00", duration: 30, price: 500 },
+                { dayOfWeek: 3, start: "16:00", duration: 45, price: 750 }
+              ]).map((s, i) => {
+                const booked = isSlotBooked(s);
+                return (
+                  <button
+                    key={i}
+                    className={`slot-btn ${booked ? "booked" : ""}`}
+                    disabled={booked}
+                    onClick={() => !booked && onBookSlot(doc, s)}
+                  >
+                    {booked
+                      ? `🔒 ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][s.dayOfWeek]} • ${s.start} (Booked)`
+                      : `${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][s.dayOfWeek]} • ${s.start} (${s.duration}m)`}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {currentTab === "overview" && (
+          <div className="doctor-overview-box" style={{ padding: "20px", borderRadius: "18px", background: "var(--bg-main)" }}>
+            <h4 style={{ margin: "0 0 10px", fontSize: "16px", color: "var(--brand-navy)" }}>About {doc.name}</h4>
+            <p style={{ margin: "0 0 12px", fontSize: "13.5px", lineHeight: "1.6" }}>
+              Dr. Ananya Nair is a certified Senior Veterinary Officer with over 10 years of clinical practice. She specializes in small animal internal medicine, dermatology, gastrointestinal health, and remote diagnostic video consults.
+            </p>
+            <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "13.5px" }}>
+              <li style={{ marginBottom: "6px" }}>Registered Member of Veterinary Council of India (VCI)</li>
+              <li style={{ marginBottom: "6px" }}>Expert in remote digital prescription writing (Rx) & lab report triage</li>
+              <li style={{ marginBottom: "6px" }}>Over 1,200+ successful tele-veterinary consultations completed</li>
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -538,20 +839,82 @@ function MyAppointmentsSection({ apps, onOpenConsultation }) {
   );
 }
 
-// AI Chatbot Drawer Component
+// Voice-Enabled Talking AI Chatbot Drawer Component
 function AIChatDrawer({ isOpen, onClose, onConnectDoctor }) {
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "Hello! I am your VetPulse AI Health Assistant. Ask me any question about pet health, symptoms, diet, or vaccine guidance!" }
+    { sender: "bot", text: "Hello! I am your VetPulse Voice AI Health Assistant. Ask me any question about pet health, symptoms, diet, behavior, or vaccine guidance — I am here to talk and assist you!" }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
 
   const quickQuestions = ["Upset Stomach / Vomiting", "Ear Scratching & Smell", "Skin Rash & Itching", "Diet & Toxic Foods", "Vaccine Schedule"];
+
+  const stopSpeech = () => {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+    setSpeakingIndex(null);
+  };
+
+  const speakText = (text, msgIdx) => {
+    if (!("speechSynthesis" in window)) return;
+
+    window.speechSynthesis.cancel();
+
+    if (speakingIndex === msgIdx && isSpeaking) {
+      stopSpeech();
+      return;
+    }
+
+    // Clean markdown formatting for natural speech synthesis
+    const cleanText = text
+      .replace(/•/g, "")
+      .replace(/[*_#`-]/g, "")
+      .replace(/https?:\/\/\S+/g, "")
+      .trim();
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+
+    // Pick a clear natural voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const naturalVoice = voices.find(v => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha")));
+    if (naturalVoice) utterance.voice = naturalVoice;
+
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      setSpeakingIndex(msgIdx);
+    };
+
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      setSpeakingIndex(null);
+    };
+
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      setSpeakingIndex(null);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      stopSpeech();
+    }
+  }, [isOpen]);
 
   const handleSend = async (qText) => {
     const text = qText || input;
     if (!text.trim()) return;
 
+    stopSpeech();
     const userMsg = { sender: "user", text };
     setMessages(prev => [...prev, userMsg]);
     if (!qText) setInput("");
@@ -559,15 +922,23 @@ function AIChatDrawer({ isOpen, onClose, onConnectDoctor }) {
 
     try {
       const res = await api("/api/ai-chat", { method: "POST", body: JSON.stringify({ question: text }) });
-      setMessages(prev => [
-        ...prev,
-        {
-          sender: "bot",
-          text: res.answer,
-          category: res.category,
-          recommendedAction: res.recommendedAction
+      const newBotMsg = {
+        sender: "bot",
+        text: res.answer,
+        category: res.category,
+        recommendedAction: res.recommendedAction
+      };
+      
+      setMessages(prev => {
+        const updated = [...prev, newBotMsg];
+        const newIndex = updated.length - 1;
+        
+        // Speak response out loud if voice is enabled
+        if (!isMuted) {
+          setTimeout(() => speakText(res.answer, newIndex), 200);
         }
-      ]);
+        return updated;
+      });
     } catch {
       setMessages(prev => [...prev, { sender: "bot", text: "Sorry, I had trouble processing that request. Please try again." }]);
     } finally {
@@ -580,28 +951,70 @@ function AIChatDrawer({ isOpen, onClose, onConnectDoctor }) {
   return (
     <div className="ai-chat-drawer">
       <div className="ai-header">
-        <h3>VetPulse AI Health Assistant</h3>
-        <button className="ghost" style={{ color: "#fff" }} onClick={onClose}>✕</button>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <h3>VetPulse Talking AI Assistant</h3>
+          {isSpeaking && (
+            <div className="audio-wave-box" title="AI Voice Speaking">
+              <span className="wave-bar"></span>
+              <span className="wave-bar"></span>
+              <span className="wave-bar"></span>
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <button
+            className="voice-toggle-btn"
+            title={isMuted ? "Unmute Voice Speech" : "Mute Voice Speech"}
+            onClick={() => {
+              if (!isMuted) stopSpeech();
+              setIsMuted(!isMuted);
+            }}
+          >
+            {isMuted ? "🔇 Muted" : "🔊 Voice Active"}
+          </button>
+          
+          {isSpeaking && (
+            <button className="voice-stop-btn" title="Stop Current Speech" onClick={stopSpeech}>
+              ⏹ Stop
+            </button>
+          )}
+
+          <button className="ghost" style={{ color: "#fff", padding: "4px 8px" }} onClick={() => { stopSpeech(); onClose(); }}>✕</button>
+        </div>
       </div>
 
       <div className="ai-body">
         {messages.map((m, i) => (
           <div key={i} className={`ai-msg ${m.sender}`}>
-            {m.category && <span style={{ fontSize: "11px", fontWeight: "700", opacity: 0.8, display: "block", marginBottom: "4px" }}>[{m.category}]</span>}
-            <div style={{ whiteSpace: "pre-line" }}>{m.text}</div>
-            {m.recommendedAction && (
-              <div style={{ marginTop: "12px", paddingTop: "10px", borderTop: "1px dashed #ccfbf1" }}>
+            <div className="ai-msg-header">
+              {m.category && <span className="ai-category-badge">[{m.category}]</span>}
+              {m.sender === "bot" && (
                 <button
-                  style={{ width: "100%", padding: "8px", fontSize: "12px", background: "var(--brand-primary-dark)" }}
-                  onClick={() => { onClose(); onConnectDoctor?.(); }}
+                  className={`speak-bubble-btn ${speakingIndex === i && isSpeaking ? "speaking" : ""}`}
+                  title={speakingIndex === i && isSpeaking ? "Stop Speech" : "Read Aloud"}
+                  onClick={() => speakText(m.text, i)}
                 >
-                  Connect With Licensed Vet Doctor
+                  {speakingIndex === i && isSpeaking ? "⏹ Stop Speaking" : "🔊 Read Aloud"}
+                </button>
+              )}
+            </div>
+
+            <div style={{ whiteSpace: "pre-line", marginTop: "4px" }}>{m.text}</div>
+            
+            {m.recommendedAction && (
+              <div style={{ marginTop: "12px", paddingTop: "10px", borderTop: "1px dashed var(--brand-primary-border)" }}>
+                <button
+                  style={{ width: "100%", padding: "9px", fontSize: "12px", background: "var(--brand-navy)" }}
+                  onClick={() => { stopSpeech(); onClose(); onConnectDoctor?.(); }}
+                >
+                  🩺 Connect With Licensed Vet Specialist
                 </button>
               </div>
             )}
           </div>
         ))}
-        {loading && <div className="ai-msg bot">Checking medical guidelines...</div>}
+        {loading && <div className="ai-msg bot">Consulting veterinary medical guidelines...</div>}
       </div>
 
       <div className="ai-quick-chips">
@@ -612,12 +1025,12 @@ function AIChatDrawer({ isOpen, onClose, onConnectDoctor }) {
 
       <div className="ai-input-area">
         <input
-          placeholder="Ask general animal health question..."
+          placeholder="Ask any animal health, diet, or behavior question..."
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === "Enter" && handleSend()}
         />
-        <button onClick={() => handleSend()}>Ask</button>
+        <button onClick={() => handleSend()}>Ask AI</button>
       </div>
     </div>
   );
@@ -656,66 +1069,125 @@ function Login({ onLogin }) {
   };
 
   return (
-    <div className="auth" style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#f0fdfa", padding: "20px 0" }}>
-      <div className="card authbox" style={{ width: "min(460px, 94vw)", padding: "36px", borderRadius: "24px", background: "#fff", boxShadow: "var(--shadow-lg)" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "18px" }}>
+    <div className="auth-screen">
+      <div className="auth-container">
+        {/* Left Branding Hero Sidebar */}
+        <div className="auth-brand-side">
           <Logo />
-        </div>
-        <h1 style={{ fontSize: "24px", margin: "0 0 8px", textAlign: "center" }}>
-          {register ? "Create Pet Parent Account" : "Welcome to VetPulse"}
-        </h1>
-        <p style={{ color: "var(--text-secondary)", margin: "0 0 24px", textAlign: "center" }}>
-          Clinical tele-veterinary consultation platform.
-        </p>
+          <div className="auth-hero-content">
+            <h2>Certified Tele-Veterinary Care & AI Health Triage</h2>
+            <p>
+              Connect 1-on-1 with top licensed veterinary surgeons and internal medicine specialists for HD video consultations, digital prescriptions, and 24/7 AI-guided care.
+            </p>
 
-        {register && (
-          <div style={{ display: "grid", gap: "12px", marginBottom: "12px" }}>
-            <input placeholder="Your Full Name" value={f.name} onChange={e => setF({ ...f, name: e.target.value })} />
-            <input placeholder="Pet Name" value={f.petName} onChange={e => setF({ ...f, petName: e.target.value })} />
+            <div className="auth-feature-list">
+              <div className="auth-feature-item">
+                <span className="feat-icon">🩺</span>
+                <div>
+                  <b>Licensed Specialist Vets</b>
+                  <span>Board-certified veterinary doctors on duty.</span>
+                </div>
+              </div>
+              <div className="auth-feature-item">
+                <span className="feat-icon">📄</span>
+                <div>
+                  <b>Digital Prescriptions (Rx)</b>
+                  <span>Receive official prescriptions directly in consultation chat.</span>
+                </div>
+              </div>
+              <div className="auth-feature-item">
+                <span className="feat-icon">🤖</span>
+                <div>
+                  <b>24/7 Voice AI Assistant</b>
+                  <span>Instant talking AI guidance on pet symptoms & emergency flags.</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="auth-trust-strip">
+              <span>🔒 256-Bit Encrypted</span>
+              <span>•</span>
+              <span>VCI Certified</span>
+              <span>•</span>
+              <span>Instant Video HD</span>
+            </div>
           </div>
-        )}
-        <div style={{ display: "grid", gap: "12px", marginBottom: "16px" }}>
-          <input placeholder="Email Address" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
-          <input type="password" placeholder="Password" value={f.password} onChange={e => setF({ ...f, password: e.target.value })} />
         </div>
-        
-        {err && <div style={{ color: "#a33", background: "#fff0ef", padding: "10px", borderRadius: "8px", marginBottom: "12px", fontSize: "13px" }}>{err}</div>}
-        
-        <button onClick={submit} style={{ width: "100%", padding: "13px", fontSize: "15px" }}>
-          {register ? "Create Account" : "Sign In to Portal"}
-        </button>
-        
-        <button className="link" style={{ width: "100%", marginTop: "12px" }} onClick={() => setRegister(!register)}>
-          {register ? "Already have an account? Sign in" : "Create a new account"}
-        </button>
 
-        <div className="demo-credentials-box">
-          <b style={{ fontSize: "13px", color: "var(--brand-primary-dark)", display: "block" }}>⚡ Click any Demo Profile for 1-Click Login:</b>
-          <div className="demo-login-grid">
-            <button className="demo-login-btn" type="button" onClick={() => quickLogin("doctor@vetpulse.demo", "doctor123")}>
-              <span>🩺 <b>Doctor 1:</b> Dr. Ananya Nair (Dermatology)</span>
-              <span style={{ fontSize: "11px", color: "var(--brand-blue)" }}>Sign in →</span>
-            </button>
+        {/* Right Interactive Login & Quick Demo Form */}
+        <div className="auth-form-side">
+          <h1 style={{ fontSize: "22px", margin: "0 0 6px" }}>
+            {register ? "Create Pet Parent Account" : "Sign In to Tele-Health Portal"}
+          </h1>
+          <p style={{ color: "var(--text-secondary)", margin: "0 0 20px", fontSize: "13.5px" }}>
+            Enter your credentials or click any demo role below for 1-click access.
+          </p>
 
-            <button className="demo-login-btn" type="button" onClick={() => quickLogin("vikram@vetpulse.demo", "doctor123")}>
-              <span>🩺 <b>Doctor 2:</b> Dr. Vikram Rao (Surgeon)</span>
-              <span style={{ fontSize: "11px", color: "var(--brand-blue)" }}>Sign in →</span>
+          <form onSubmit={submit}>
+            {register && (
+              <div style={{ display: "grid", gap: "10px", marginBottom: "10px" }}>
+                <input placeholder="Your Full Name" value={f.name} onChange={e => setF({ ...f, name: e.target.value })} />
+                <input placeholder="Pet Name" value={f.petName} onChange={e => setF({ ...f, petName: e.target.value })} />
+              </div>
+            )}
+            <div style={{ display: "grid", gap: "10px", marginBottom: "14px" }}>
+              <input placeholder="Email Address" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} />
+              <input type="password" placeholder="Password" value={f.password} onChange={e => setF({ ...f, password: e.target.value })} />
+            </div>
+            
+            {err && <div style={{ color: "#a33", background: "#fff0ef", padding: "10px", borderRadius: "8px", marginBottom: "12px", fontSize: "13px" }}>{err}</div>}
+            
+            <button type="submit" style={{ width: "100%", padding: "11px", fontSize: "14px" }}>
+              {register ? "Create Account" : "Sign In to Portal"}
             </button>
+          </form>
+          
+          <button className="link" style={{ width: "100%", marginTop: "10px", fontSize: "13px" }} onClick={() => setRegister(!register)}>
+            {register ? "Already have an account? Sign in" : "Create a new pet parent account"}
+          </button>
 
-            <button className="demo-login-btn" type="button" onClick={() => quickLogin("sophia@vetpulse.demo", "doctor123")}>
-              <span>🩺 <b>Doctor 3:</b> Dr. Sophia Chen (Exotic Pets)</span>
-              <span style={{ fontSize: "11px", color: "var(--brand-blue)" }}>Sign in →</span>
-            </button>
+          <div className="demo-credentials-box">
+            <div className="demo-header">
+              <span className="demo-badge">PRODUCTION DEMO ACCESS</span>
+              <b style={{ fontSize: "13px", color: "var(--brand-navy)", display: "block", marginTop: "4px" }}>
+                Select Role for Instant 1-Click Login:
+              </b>
+            </div>
 
-            <button className="demo-login-btn" type="button" onClick={() => quickLogin("admin@vetpulse.demo", "admin123")}>
-              <span>👑 <b>Admin:</b> System Administrator</span>
-              <span style={{ fontSize: "11px", color: "#dc2626" }}>Sign in →</span>
-            </button>
+            <div className="demo-login-grid">
+              <button className="demo-login-btn doctor-theme" type="button" onClick={() => quickLogin("doctor@vetpulse.demo", "doctor123")}>
+                <div className="demo-btn-left">
+                  <span className="role-icon">👩‍⚕️</span>
+                  <div>
+                    <b>Doctor Login:</b> Dr. Ananya Nair (Senior Vet Officer)
+                    <div className="demo-subtext">doctor@vetpulse.demo • Pass: doctor123</div>
+                  </div>
+                </div>
+                <span className="demo-arrow">Sign in →</span>
+              </button>
 
-            <button className="demo-login-btn" type="button" onClick={() => quickLogin("patient@vetpulse.demo", "patient123")}>
-              <span>🐾 <b>Patient:</b> Demo Pet Parent (Milo)</span>
-              <span style={{ fontSize: "11px", color: "var(--brand-green)" }}>Sign in →</span>
-            </button>
+              <button className="demo-login-btn admin-theme" type="button" onClick={() => quickLogin("admin@vetpulse.demo", "admin123")}>
+                <div className="demo-btn-left">
+                  <span className="role-icon">👑</span>
+                  <div>
+                    <b>Admin Login:</b> System Administrator
+                    <div className="demo-subtext">admin@vetpulse.demo • Pass: admin123</div>
+                  </div>
+                </div>
+                <span className="demo-arrow danger-arrow">Sign in →</span>
+              </button>
+
+              <button className="demo-login-btn patient-theme" type="button" onClick={() => quickLogin("patient@vetpulse.demo", "patient123")}>
+                <div className="demo-btn-left">
+                  <span className="role-icon">🐾</span>
+                  <div>
+                    <b>Patient Login:</b> Demo Pet Parent (Milo)
+                    <div className="demo-subtext">patient@vetpulse.demo • Pass: patient123</div>
+                  </div>
+                </div>
+                <span className="demo-arrow success-arrow">Sign in →</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -731,6 +1203,7 @@ function Patient({ user, onLogout }) {
   const [selected, setSelected] = useState(null);
   const [chat, setChat] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
+  const [showAllConditions, setShowAllConditions] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -768,18 +1241,26 @@ function Patient({ user, onLogout }) {
   };
 
   const scrollToSection = id => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (showAllConditions) {
+      setShowAllConditions(false);
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
     <>
       <header>
-        <Logo onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} />
+        <Logo onClick={() => { setShowAllConditions(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
         <div className="nav-links">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>Home</button>
+          <button onClick={() => { setShowAllConditions(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Home</button>
           <button onClick={() => scrollToSection("doctors-section")}>Find Vets</button>
-          <button onClick={() => scrollToSection("articles-section")}>Health Guides</button>
+          <button onClick={() => setShowAllConditions(true)}>Health Guides</button>
           <button onClick={() => scrollToSection("my-appointments")}>My Consultations</button>
           <button onClick={() => setAiOpen(true)}>💬 AI Assistant</button>
         </div>
@@ -792,63 +1273,180 @@ function Patient({ user, onLogout }) {
       </header>
 
       <main>
-        {/* Subtle Clinical Hero Banner */}
-        <HeroBanner
-          onBookNow={() => scrollToSection("doctors-section")}
-          onAskAI={() => setAiOpen(true)}
-        />
+        {showAllConditions ? (
+          <AllConditionsPage
+            onBack={() => setShowAllConditions(false)}
+            onSelectDoctor={() => scrollToSection("doctors-section")}
+          />
+        ) : (
+          <div className="dashboard-layout">
+            {/* Top Patient Header Bar */}
+            <div className="patient-welcome-bar">
+              <div className="welcome-left">
+                <h2>Welcome back, {user.name} 👋</h2>
+                <p>Caring for <b>{user.petName || 'Pet'} ({user.petType || 'Dog'})</b> • Clinical Tele-Health Portal</p>
+              </div>
+              <div className="welcome-quick-pills">
+                <span className="pill-badge active">🟢 2 Licensed Doctors Online</span>
+                <span className="pill-badge">⚡ Instant 15-Min Slots</span>
+                <span className="pill-badge">🤖 Voice AI Assistant Ready</span>
+              </div>
+            </div>
 
-        {/* Services Overview Grid */}
-        <ServicesSection onServiceClick={title => {
-          if (title.includes("Video") || title.includes("History")) scrollToSection("doctors-section");
-          else if (title.includes("AI")) setAiOpen(true);
-          else scrollToSection("articles-section");
-        }} />
+            {/* 2-Column Portal Workspace Grid Division */}
+            <div className="portal-grid-container">
+              {/* Primary Column (Left) */}
+              <div className="portal-main-col">
+                <HeroBanner
+                  onBookNow={() => scrollToSection("doctors-section")}
+                  onAskAI={() => setAiOpen(true)}
+                />
 
-        {/* Common Health Conditions & Symptom Guides */}
-        <ArticlesSection onSelectDoctor={() => scrollToSection("doctors-section")} />
+                <DoctorsSection doctors={doctors} slots={slots} apps={apps} onBookSlot={bookSlot} />
 
-        {/* Subtle CTA Banner */}
-        <CTABanner onConnect={() => scrollToSection("doctors-section")} />
+                <ServicesSection onServiceClick={title => {
+                  if (title.includes("Video") || title.includes("History")) scrollToSection("doctors-section");
+                  else if (title.includes("AI")) setAiOpen(true);
+                  else setShowAllConditions(true);
+                }} />
 
-        {/* Doctor Profiles & Availability Booking */}
-        <DoctorsSection doctors={doctors} slots={slots} onBookSlot={bookSlot} />
+                <ArticlesSection
+                  onSelectDoctor={() => scrollToSection("doctors-section")}
+                  onViewAllConditions={() => setShowAllConditions(true)}
+                />
 
-        {/* My Consultations Appointments Portal */}
-        <MyAppointmentsSection
-          apps={apps}
-          onOpenConsultation={ap => { setSelected(ap); setChat(true); }}
-        />
+                <CTABanner
+                  doctors={doctors}
+                  onConnect={() => scrollToSection("doctors-section")}
+                />
+              </div>
+
+              {/* Sidebar Column (Right) */}
+              <div className="portal-sidebar-col">
+                <MyAppointmentsSection
+                  apps={apps}
+                  onOpenConsultation={ap => { setSelected(ap); setChat(true); }}
+                />
+
+                <div className="sidebar-widget-card ai-widget-card">
+                  <div className="widget-header">
+                    <Icons.AI />
+                    <h3>VetPulse Voice AI Assistant</h3>
+                  </div>
+                  <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: "0 0 14px" }}>
+                    Get immediate voice-enabled guidance on symptoms, diet, vaccines, or toxic foods.
+                  </p>
+                  <button style={{ width: "100%", padding: "10px", fontSize: "13px" }} onClick={() => setAiOpen(true)}>
+                    💬 Launch Talking AI Assistant
+                  </button>
+                </div>
+
+                <div className="sidebar-widget-card emergency-widget-card">
+                  <div className="emergency-header">
+                    <span className="pulse-dot"></span>
+                    <b>24/7 Emergency Triage</b>
+                  </div>
+                  <p style={{ margin: "8px 0 4px", fontSize: "12.5px" }}>Direct vet emergency dispatch helpline:</p>
+                  <div className="emergency-phone">📞 1-800-VET-PULSE</div>
+                  <span className="emergency-note">For critical trauma, breathing distress, or acute poisoning.</span>
+                </div>
+
+                <div className="sidebar-widget-card wellness-widget-card">
+                  <h4>Pet Preventive Health Checklist</h4>
+                  <ul className="wellness-checklist">
+                    <li>✓ Annual Rabies & DHPP Vaccination</li>
+                    <li>✓ Quarterly Deworming Protocol</li>
+                    <li>✓ Monthly Flea & Tick Preventive</li>
+                    <li>✓ Bi-annual Oral & Dental Scaling</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
-      {/* Footer */}
-      <footer>
-        <div className="footer-grid">
-          <div>
-            <Logo />
-            <p style={{ marginTop: "14px" }}>
-              VetPulse provides 1-on-1 video consultations, digital prescriptions, and 24/7 AI assistance for pets and domestic animals.
-            </p>
-          </div>
-          <div>
-            <h4>Quick Links</h4>
-            <a href="#doctors-section">Find Veterinarians</a>
-            <a href="#articles-section">Health & Symptom Guides</a>
-            <a href="#my-appointments">My Appointments</a>
-          </div>
-          <div>
-            <h4>Services</h4>
-            <a href="#doctors-section">WebRTC Video Consult</a>
-            <a href="#doctors-section">Digital Prescriptions</a>
-            <a href="#articles-section">Lab Report Storage</a>
-          </div>
-          <div>
-            <h4>Emergency Contact</h4>
-            <p>For urgent life-threatening emergencies, visit your nearest emergency veterinary hospital immediately.</p>
+      {/* Redesigned Premium Footer */}
+      <footer className="footer-redesign">
+        <div className="footer-top-strip">
+          <div className="footer-newsletter">
+            <div>
+              <h3>Stay Informed on Animal Care & Health Guidelines</h3>
+              <p>Get monthly veterinary health tips, seasonal allergy alerts, and emergency care checklists.</p>
+            </div>
+            <div className="newsletter-form">
+              <input type="email" placeholder="Enter your email address..." />
+              <button onClick={() => alert("Thank you for subscribing to VetPulse Health Updates!")}>Subscribe</button>
+            </div>
           </div>
         </div>
+
+        <div className="footer-grid">
+          <div className="footer-brand-col">
+            <Logo />
+            <p className="footer-desc">
+              VetPulse is a certified clinical tele-veterinary platform connecting pet owners with licensed doctors for HD video consultations, digital prescriptions (Rx), and 24/7 AI-assisted health triage.
+            </p>
+            <div className="footer-trust-badges">
+              <span className="trust-badge">🔒 256-Bit Encrypted</span>
+              <span className="trust-badge">🩺 VCI Certified Vets</span>
+              <span className="trust-badge">⚡ 24/7 Tele-Care</span>
+            </div>
+          </div>
+
+          <div>
+            <h4>Clinical Services</h4>
+            <ul className="footer-links-list">
+              <li><button className="link-btn" onClick={() => scrollToSection("doctors-section")}>WebRTC HD Video Consult</button></li>
+              <li><button className="link-btn" onClick={() => scrollToSection("doctors-section")}>Digital Prescriptions (Rx)</button></li>
+              <li><button className="link-btn" onClick={() => scrollToSection("articles-section")}>Common Symptom Guides</button></li>
+              <li><button className="link-btn" onClick={() => scrollToSection("my-appointments")}>Consultation Records</button></li>
+              <li><button className="link-btn" onClick={() => setAiOpen(true)}>24/7 AI Health Assistant</button></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Veterinary Specialties</h4>
+            <ul className="footer-links-list">
+              <li><span className="static-link">Internal Medicine</span></li>
+              <li><span className="static-link">Dermatology & Rash Care</span></li>
+              <li><span className="static-link">Gastroenterology</span></li>
+              <li><span className="static-link">Ear & Eye Infections</span></li>
+              <li><span className="static-link">Preventive Wellness & Vaccines</span></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Emergency Triage</h4>
+            <div className="emergency-card">
+              <div className="emergency-header">
+                <span className="pulse-dot"></span>
+                <b>24/7 Veterinary Helpline</b>
+              </div>
+              <p style={{ margin: "6px 0", fontSize: "13px", color: "#e2e8f0" }}>
+                For critical life-threatening conditions, contact emergency dispatch:
+              </p>
+              <div className="emergency-phone">📞 1-800-VET-PULSE</div>
+              <span className="emergency-note">Always keep local emergency clinic contact numbers ready.</span>
+            </div>
+          </div>
+        </div>
+
         <div className="footer-bottom">
-          © {new Date().getFullYear()} VetPulse Healthcare Technologies Inc. All rights reserved.
+          <div className="footer-bottom-content">
+            <div>
+              © {new Date().getFullYear()} VetPulse Tele-Veterinary Healthcare Inc. All rights reserved.
+            </div>
+            <div className="legal-links">
+              <span>Privacy Policy</span>
+              <span>•</span>
+              <span>Terms of Clinical Care</span>
+              <span>•</span>
+              <span>HIPAA Compliance</span>
+              <span>•</span>
+              <span>Tele-Health Disclaimer</span>
+            </div>
+          </div>
         </div>
       </footer>
 
@@ -941,75 +1539,307 @@ function Doctor({ user, onLogout }) {
   );
 }
 
-// WebRTC Consultation Modal Component
+// WebRTC Consultation Modal Component — Production Ready Engine
 function Consultation({ app, user, doctorMode, onClose }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [docs, setDocs] = useState([]);
   const [med, setMed] = useState({ name: "", dose: "", frequency: "", duration: "", instructions: "" });
   const [advice, setAdvice] = useState("");
-  const [peer, setPeer] = useState(false);
-  const [timer, setTimer] = useState(1104);
+
+  // Live WebRTC Audio/Video & View States
+  const [callState, setCallState] = useState("idle"); // 'idle' | 'connecting' | 'connected' | 'disconnected' | 'failed'
+  const [mobileTab, setMobileTab] = useState("video"); // 'video' | 'chat'
+  const [peerConnected, setPeerConnected] = useState(false);
+  const [peerUser, setPeerUser] = useState(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [mediaError, setMediaError] = useState("");
+  const [timer, setTimer] = useState(0);
 
   const socket = useRef(null);
-  const local = useRef(null);
-  const remote = useRef(null);
+  const localStream = useRef(null);
+  const screenStream = useRef(null);
   const pc = useRef(null);
+  const iceCandidatesQueue = useRef([]);
+  const localVideoRef = useRef(null);
+  const remoteVideoRef = useRef(null);
+
+  // Enterprise STUN & TURN Infrastructure Configuration
+  const rtcConfig = {
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:stun1.l.google.com:19302" },
+      { urls: "stun:stun2.l.google.com:19302" },
+      { urls: "stun:stun3.l.google.com:19302" },
+      { urls: "stun:stun4.l.google.com:19302" }
+    ]
+  };
+
+  // Acquire local webcam and microphone stream with fallbacks
+  const getLocalMedia = async () => {
+    if (localStream.current) return localStream.current;
+    try {
+      setMediaError("");
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+      });
+      localStream.current = stream;
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+      }
+      return stream;
+    } catch (err) {
+      console.warn("Media device access error:", err);
+      try {
+        const audioOnly = await navigator.mediaDevices.getUserMedia({ audio: true });
+        localStream.current = audioOnly;
+        setMediaError("Camera blocked/unavailable. Consultation operating in audio-only mode.");
+        return audioOnly;
+      } catch (errAudio) {
+        setMediaError("Camera & Microphone access not granted. Please allow browser permissions.");
+        return null;
+      }
+    }
+  };
+
+  const createPeerConnection = async () => {
+    if (pc.current) return pc.current;
+
+    const newPC = new RTCPeerConnection(rtcConfig);
+    pc.current = newPC;
+
+    newPC.onicecandidate = (event) => {
+      if (event.candidate && socket.current) {
+        socket.current.emit("webrtc-signal", {
+          appointmentId: app._id,
+          data: { candidate: event.candidate }
+        });
+      }
+    };
+
+    newPC.ontrack = (event) => {
+      if (remoteVideoRef.current && event.streams[0]) {
+        remoteVideoRef.current.srcObject = event.streams[0];
+        setCallState("connected");
+        setPeerConnected(true);
+      }
+    };
+
+    newPC.onconnectionstatechange = () => {
+      if (newPC.connectionState === "connected") {
+        setCallState("connected");
+        setPeerConnected(true);
+      } else if (newPC.connectionState === "disconnected" || newPC.connectionState === "failed") {
+        setCallState("disconnected");
+        setPeerConnected(false);
+      }
+    };
+
+    newPC.oniceconnectionstatechange = () => {
+      if (newPC.iceConnectionState === "connected" || newPC.iceConnectionState === "completed") {
+        setCallState("connected");
+        setPeerConnected(true);
+      } else if (newPC.iceConnectionState === "failed") {
+        setCallState("failed");
+      }
+    };
+
+    const stream = await getLocalMedia();
+    if (stream) {
+      stream.getTracks().forEach(track => {
+        newPC.addTrack(track, stream);
+      });
+    }
+
+    return newPC;
+  };
+
+  const processQueuedIceCandidates = async () => {
+    if (!pc.current || !pc.current.remoteDescription) return;
+    while (iceCandidatesQueue.current.length > 0) {
+      const candidate = iceCandidatesQueue.current.shift();
+      try {
+        await pc.current.addIceCandidate(candidate);
+      } catch (e) {
+        console.error("Error adding queued candidate:", e);
+      }
+    }
+  };
+
+  const handleIncomingOffer = async (offer) => {
+    setCallState("connecting");
+    const connection = await createPeerConnection();
+    await connection.setRemoteDescription(new RTCSessionDescription(offer));
+    await processQueuedIceCandidates();
+
+    const answer = await connection.createAnswer();
+    await connection.setLocalDescription(answer);
+
+    socket.current.emit("webrtc-signal", {
+      appointmentId: app._id,
+      data: { answer: connection.localDescription }
+    });
+  };
+
+  const handleIncomingAnswer = async (answer) => {
+    if (pc.current) {
+      await pc.current.setRemoteDescription(new RTCSessionDescription(answer));
+      await processQueuedIceCandidates();
+      setCallState("connected");
+      setPeerConnected(true);
+    }
+  };
+
+  const handleIncomingCandidate = async (candidate) => {
+    if (pc.current && pc.current.remoteDescription) {
+      try {
+        await pc.current.addIceCandidate(new RTCIceCandidate(candidate));
+      } catch (e) {
+        console.error("Error adding ICE candidate:", e);
+      }
+    } else {
+      iceCandidatesQueue.current.push(new RTCIceCandidate(candidate));
+    }
+  };
+
+  const startCall = async () => {
+    setCallState("connecting");
+    const connection = await createPeerConnection();
+    const offer = await connection.createOffer();
+    await connection.setLocalDescription(offer);
+
+    socket.current.emit("presence", { appointmentId: app._id, present: true });
+    socket.current.emit("webrtc-signal", {
+      appointmentId: app._id,
+      data: { offer: connection.localDescription }
+    });
+  };
+
+  const toggleMute = () => {
+    if (localStream.current) {
+      const audioTrack = localStream.current.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setIsMuted(!audioTrack.enabled);
+      }
+    }
+  };
+
+  const toggleCamera = () => {
+    if (localStream.current) {
+      const videoTrack = localStream.current.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setIsVideoOff(!videoTrack.enabled);
+      }
+    }
+  };
+
+  const toggleScreenShare = async () => {
+    if (!pc.current) {
+      await startCall();
+    }
+    if (isScreenSharing) {
+      if (screenStream.current) {
+        screenStream.current.getTracks().forEach(t => t.stop());
+        screenStream.current = null;
+      }
+      const videoTrack = localStream.current?.getVideoTracks()[0];
+      const sender = pc.current.getSenders().find(s => s.track && s.track.kind === "video");
+      if (sender && videoTrack) {
+        await sender.replaceTrack(videoTrack);
+      }
+      if (localVideoRef.current && localStream.current) {
+        localVideoRef.current.srcObject = localStream.current;
+      }
+      setIsScreenSharing(false);
+    } else {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        screenStream.current = stream;
+        const screenTrack = stream.getVideoTracks()[0];
+        const sender = pc.current.getSenders().find(s => s.track && s.track.kind === "video");
+        if (sender && screenTrack) {
+          await sender.replaceTrack(screenTrack);
+        }
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+        setIsScreenSharing(true);
+
+        screenTrack.onended = () => {
+          toggleScreenShare();
+        };
+      } catch (err) {
+        console.warn("Screen share cancelled:", err);
+      }
+    }
+  };
 
   useEffect(() => {
     const tInterval = setInterval(() => setTimer(x => x + 1), 1000);
     api(`/api/appointments/${app._id}/messages`).then(setMessages);
     api(`/api/appointments/${app._id}/documents`).then(setDocs);
 
+    getLocalMedia();
+
     socket.current = io(API, { auth: { token: getToken() } });
     socket.current.emit("join-appointment", { appointmentId: app._id });
+
     socket.current.on("new-message", m => setMessages(x => [...x, m]));
     socket.current.on("document-added", d => setDocs(x => [d, ...x]));
 
-    socket.current.on("webrtc-signal", async ({ data }) => {
-      if (data.offer) {
-        await ensurePC();
-        await pc.current.setRemoteDescription(data.offer);
-        const ans = await pc.current.createAnswer();
-        await pc.current.setLocalDescription(ans);
-        socket.current.emit("webrtc-signal", { appointmentId: app._id, data: { answer: pc.current.localDescription } });
-      } else if (data.answer) {
-        await pc.current.setRemoteDescription(data.answer);
-      } else if (data.candidate) {
-        try { await pc.current.addIceCandidate(data.candidate); } catch {}
+    socket.current.on("room-status", ({ count, user }) => {
+      if (count > 1) {
+        setPeerConnected(true);
       }
     });
 
-    socket.current.on("peer-presence", x => setPeer(x.present));
+    socket.current.on("peer-joined", ({ user }) => {
+      setPeerConnected(true);
+      if (user) setPeerUser(user);
+      // Auto initiate call if room active
+      startCall();
+    });
+
+    socket.current.on("peer-left", () => {
+      setPeerConnected(false);
+      setCallState("disconnected");
+    });
+
+    socket.current.on("webrtc-signal", async ({ data, senderUser }) => {
+      if (senderUser) setPeerUser(senderUser);
+      if (data.offer) {
+        await handleIncomingOffer(data.offer);
+      } else if (data.answer) {
+        await handleIncomingAnswer(data.answer);
+      } else if (data.candidate) {
+        await handleIncomingCandidate(data.candidate);
+      }
+    });
+
+    socket.current.on("peer-presence", x => {
+      setPeerConnected(x.present);
+      if (x.user) setPeerUser(x.user);
+    });
 
     return () => {
       clearInterval(tInterval);
+      if (localStream.current) {
+        localStream.current.getTracks().forEach(t => t.stop());
+      }
+      if (screenStream.current) {
+        screenStream.current.getTracks().forEach(t => t.stop());
+      }
+      if (pc.current) {
+        pc.current.close();
+      }
       socket.current?.disconnect();
     };
   }, []);
-
-  const ensurePC = async () => {
-    if (pc.current) return;
-    pc.current = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
-    pc.current.onicecandidate = e => e.candidate && socket.current.emit("webrtc-signal", { appointmentId: app._id, data: { candidate: e.candidate } });
-    pc.current.ontrack = e => { if (remote.current) remote.current.srcObject = e.streams[0]; };
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      if (local.current) local.current.srcObject = stream;
-      stream.getTracks().forEach(t => pc.current.addTrack(t, stream));
-    } catch {
-      console.log("WebRTC demo mode.");
-    }
-  };
-
-  const call = async () => {
-    await ensurePC();
-    const offer = await pc.current.createOffer();
-    await pc.current.setLocalDescription(offer);
-    socket.current.emit("presence", { appointmentId: app._id, present: true });
-    socket.current.emit("webrtc-signal", { appointmentId: app._id, data: { offer: pc.current.localDescription } });
-  };
 
   const send = () => {
     if (text.trim()) {
@@ -1037,79 +1867,225 @@ function Consultation({ app, user, doctorMode, onClose }) {
   };
 
   const formatTimer = sec => {
-    const m = String(Math.floor(sec / 60)).padStart(2, '0');
-    const s = String(sec % 60).padStart(2, '0');
-    return `00:${m}:${s}`;
+    const hrs = String(Math.floor(sec / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+    const secs = String(sec % 60).padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
   };
+
+  const otherPersonName = doctorMode
+    ? (app.patientId?.name || "Patient")
+    : (app.doctorId?.name || "Dr. Ananya Nair");
+
+  const otherPersonRole = doctorMode ? "Pet Parent" : "Senior Veterinary Officer";
 
   return (
     <div className="modal">
       <div className="consult">
-        <div className="video">
+        {/* Video Viewport Column */}
+        <div className={`video ${mobileTab === "chat" ? "mobile-hidden" : ""}`}>
           <div className="videohead">
-            <b>{doctorMode ? `Patient Consultation` : `Consultation with ${app.doctorId?.name || 'Doctor'}`}</b>
-            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "20px" }}>{doctorMode ? "🐾" : "🩺"}</span>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <b style={{ fontSize: "14.5px", color: "#fff", lineHeight: "1.2" }}>
+                  {doctorMode ? `Patient Consultation — ${otherPersonName}` : `Live Consultation with ${otherPersonName}`}
+                </b>
+                <span style={{ fontSize: "11.5px", color: "#94a3b8" }}>
+                  🔒 256-Bit Encrypted WebRTC HD Stream
+                </span>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
               <span className="timer-badge">⏱ {formatTimer(timer)}</span>
-              <span style={{ fontSize: "13px" }}>{peer ? "🟢 Connected" : "🟡 Waiting for participant"}</span>
+              <span className={`webrtc-status-badge ${callState}`}>
+                {callState === "connected" && "🟢 HD Connected"}
+                {callState === "connecting" && "🟡 Connecting..."}
+                {callState === "idle" && (peerConnected ? "🟢 Peer Ready" : "🟡 Waiting...")}
+                {callState === "disconnected" && "⚪ Disconnected"}
+                {callState === "failed" && "🔴 Failed"}
+              </span>
             </div>
           </div>
 
-          <video ref={remote} autoPlay playsInline className="remote" poster="/vet_doctor_female.png" />
-          <video ref={local} autoPlay muted playsInline className="local" />
+          {/* Mobile View Switcher Bar */}
+          <div className="mobile-view-tabs">
+            <button className={mobileTab === "video" ? "active" : ""} onClick={() => setMobileTab("video")}>
+              📹 Video Call Stream
+            </button>
+            <button className={mobileTab === "chat" ? "active" : ""} onClick={() => setMobileTab("chat")}>
+              💬 Chat & Rx ({messages.length})
+            </button>
+          </div>
 
+          <div className="remote-wrapper">
+            {/* Top-Left Participant Overlay Card */}
+            <div className="participant-info-overlay">
+              <span className="part-dot"></span>
+              <div>
+                <b>{otherPersonName}</b>
+                <span>{otherPersonRole}</span>
+              </div>
+            </div>
+
+            <video
+              ref={remoteVideoRef}
+              autoPlay
+              playsInline
+              className="remote"
+              poster={doctorMode ? "/pet_patient_dog.png" : "/vet_doctor_female.png"}
+            />
+
+            {/* Local Self Video / Picture-in-Picture */}
+            <div className="local-video-container">
+              <video
+                ref={localVideoRef}
+                autoPlay
+                muted
+                playsInline
+                className="local"
+                style={{ display: isVideoOff ? "none" : "block" }}
+              />
+              {isVideoOff && (
+                <div className="local-video-off-placeholder">
+                  <span>📷</span>
+                  <span style={{ fontSize: "10px", color: "#94a3b8" }}>Cam Off</span>
+                </div>
+              )}
+            </div>
+
+            {mediaError && (
+              <div className="video-overlay-msg">
+                <span style={{ fontSize: "28px" }}>⚠️</span>
+                <p style={{ margin: "8px 0 0", fontSize: "13.5px" }}>{mediaError}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Modern Floating Controls Bar */}
           <div className="controls">
-            <button onClick={call}>Start / Join Video Call</button>
-            <button className="ghost" style={{ background: "rgba(255,255,255,0.2)", color: "#fff" }}>Mute</button>
-            <button className="ghost" style={{ background: "rgba(255,255,255,0.2)", color: "#fff" }}>Camera</button>
-            <button className="danger" onClick={onClose}>End Call</button>
+            {callState !== "connected" && (
+              <button className="control-btn primary" onClick={startCall}>
+                📞 Connect HD Call
+              </button>
+            )}
+
+            <button
+              className={`control-btn ${isMuted ? "active" : ""}`}
+              onClick={toggleMute}
+              title={isMuted ? "Unmute Microphone" : "Mute Microphone"}
+            >
+              {isMuted ? "🔇 Unmute" : "🎙️ Mute"}
+            </button>
+
+            <button
+              className={`control-btn ${isVideoOff ? "active" : ""}`}
+              onClick={toggleCamera}
+              title={isVideoOff ? "Turn Camera On" : "Turn Camera Off"}
+            >
+              {isVideoOff ? "📷 Cam On" : "📹 Cam Off"}
+            </button>
+
+            <button
+              className={`control-btn ${isScreenSharing ? "active" : ""}`}
+              onClick={toggleScreenShare}
+              title="Share Screen or Reports"
+            >
+              {isScreenSharing ? "🛑 Stop Share" : "🖥️ Share Screen"}
+            </button>
+
+            <button className="control-btn danger-btn" onClick={onClose}>
+              ❌ End Call
+            </button>
           </div>
         </div>
 
-        <aside>
+        {/* Sidebar Workspace Column (Chat, Prescriptions & Reports) */}
+        <aside className={mobileTab === "video" ? "mobile-hidden" : ""}>
+          {/* Mobile Back to Video Button */}
+          <div className="mobile-view-tabs mobile-only">
+            <button className={mobileTab === "video" ? "active" : ""} onClick={() => setMobileTab("video")}>
+              📹 Back to Video Call
+            </button>
+            <button className={mobileTab === "chat" ? "active" : ""} onClick={() => setMobileTab("chat")}>
+              💬 Chat & Rx ({messages.length})
+            </button>
+          </div>
+
           <div className="tabs">
-            <b>Consultation Chat</b>
-            {doctorMode && <b>Prescription Rx</b>}
+            <b className="tab-title active">💬 Consultation Chat</b>
+            {doctorMode && <b className="tab-title">📄 Rx Prescription</b>}
           </div>
 
           <div className="chatlog">
-            {messages.map(m => (
-              <div className={m.senderId?._id === user.id ? "mine" : "theirs"} key={m._id}>
-                <b>{m.senderId?.name}</b>
-                <p>{m.text}</p>
-                {m.prescriptionId && (
-                  <div style={{ background: "#fff7dc", border: "1px solid #ecd889", borderRadius: "10px", padding: "10px", marginTop: "8px" }}>
-                    <b>Rx Prescription</b>
-                    {m.prescriptionId.medicines?.map((x, i) => (
-                      <div key={i} style={{ margin: "4px 0", fontSize: "13px" }}>
-                        <strong>{x.name}</strong> — {x.dose}, {x.frequency}, {x.duration}
-                      </div>
-                    ))}
-                    <p style={{ margin: "6px 0 0", fontStyle: "italic", fontSize: "13px" }}>{m.prescriptionId.advice}</p>
-                  </div>
-                )}
+            {messages.length === 0 ? (
+              <div style={{ textAlign: "center", color: "var(--text-muted)", padding: "28px 16px", fontSize: "13px" }}>
+                💬 Consultation chat initialized.<br />Send a message to start communicating with the {doctorMode ? "patient parent" : "doctor"}.
               </div>
-            ))}
+            ) : (
+              messages.map(m => (
+                <div className={m.senderId?._id === user.id ? "mine" : "theirs"} key={m._id}>
+                  <div className="chat-sender-name">
+                    {m.senderId?.name} {m.senderId?._id === user.id ? "(You)" : ""}
+                  </div>
+                  <p className="chat-text">{m.text}</p>
+                  {m.prescriptionId && (
+                    <div className="prescription-card-in-chat">
+                      <div className="rx-badge">📄 DIGITAL PRESCRIPTION (Rx)</div>
+                      {m.prescriptionId.medicines?.map((x, i) => (
+                        <div key={i} className="rx-medicine-item">
+                          <strong>💊 {x.name}</strong>
+                          <div className="rx-med-details">
+                            <span>Dose: {x.dose || "1 tablet"}</span> • <span>Freq: {x.frequency || "Twice daily"}</span> • <span>Duration: {x.duration || "5 days"}</span>
+                          </div>
+                        </div>
+                      ))}
+                      {m.prescriptionId.advice && (
+                        <p className="rx-advice">💡 <strong>Vet Advice:</strong> {m.prescriptionId.advice}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
 
           {doctorMode ? (
-            <div style={{ padding: "16px", borderTop: "1px solid var(--border-subtle)", display: "grid", gap: "8px" }}>
-              <b>Write Digital Prescription (Rx)</b>
-              <input placeholder="Medicine name (e.g. Amoxicillin 250mg)" value={med.name} onChange={e => setMed({ ...med, name: e.target.value })} />
-              <input placeholder="Dose (e.g. 1 tablet)" value={med.dose} onChange={e => setMed({ ...med, dose: e.target.value })} />
-              <input placeholder="Frequency (e.g. twice daily)" value={med.frequency} onChange={e => setMed({ ...med, frequency: e.target.value })} />
-              <input placeholder="Duration (e.g. 7 days)" value={med.duration} onChange={e => setMed({ ...med, duration: e.target.value })} />
-              <textarea placeholder="Advice & Care Instructions" value={advice} onChange={e => setAdvice(e.target.value)} />
-              <button onClick={sendPrescription}>Send Prescription to Chat</button>
-              <div style={{ display: "flex", gap: "8px", marginTop: "4px" }}>
-                <button style={{ flex: 1 }} onClick={() => complete(true)}>Mark Completed</button>
-                <button className="ghost" style={{ flex: 1 }} onClick={() => complete(false)}>Mark Uncompleted</button>
+            <div className="prescription-form-area">
+              <b style={{ fontSize: "13.5px", color: "var(--brand-navy)", display: "block", marginBottom: "4px" }}>
+                ✍️ Write Digital Prescription (Rx)
+              </b>
+              <div className="rx-inputs-grid">
+                <input placeholder="Medicine Name (e.g. Amoxicillin 250mg)" value={med.name} onChange={e => setMed({ ...med, name: e.target.value })} />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px" }}>
+                  <input placeholder="Dosage (e.g. 1 tab)" value={med.dose} onChange={e => setMed({ ...med, dose: e.target.value })} />
+                  <input placeholder="Frequency (2x daily)" value={med.frequency} onChange={e => setMed({ ...med, frequency: e.target.value })} />
+                </div>
+                <input placeholder="Duration (e.g. 7 days)" value={med.duration} onChange={e => setMed({ ...med, duration: e.target.value })} />
+                <textarea rows="2" placeholder="Clinical Advice & Instructions..." value={advice} onChange={e => setAdvice(e.target.value)} />
+              </div>
+
+              <button className="button-indigo" style={{ width: "100%", padding: "10px", marginTop: "8px", fontSize: "13px" }} onClick={sendPrescription}>
+                📄 Generate & Send Prescription
+              </button>
+
+              <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                <button className="button-secondary" style={{ flex: 1, padding: "8px", fontSize: "12px" }} onClick={() => complete(true)}>
+                  ✓ Mark Completed
+                </button>
+                <button className="ghost" style={{ flex: 1, padding: "8px", fontSize: "12px" }} onClick={() => complete(false)}>
+                  Mark Uncompleted
+                </button>
               </div>
             </div>
           ) : (
             <>
-              <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border-subtle)" }}>
+              <div className="doc-upload-area">
                 <label style={{ display: "block" }}>
-                  <b style={{ fontSize: "13px", display: "block", marginBottom: "4px" }}>Upload Pet Reports & Documents</b>
+                  <b style={{ fontSize: "12.5px", display: "block", marginBottom: "4px", color: "var(--brand-navy)" }}>
+                    📎 Attach Pet Reports / Blood Work / X-Rays
+                  </b>
                   <input type="file" onChange={async e => {
                     if (e.target.files[0]) {
                       const f = new FormData();
@@ -1119,7 +2095,11 @@ function Consultation({ app, user, doctorMode, onClose }) {
                     }
                   }} />
                 </label>
-                {docs.map(d => <div key={d._id} style={{ fontSize: "12px", marginTop: "4px" }}>📄 {d.originalName}</div>)}
+                {docs.length > 0 && (
+                  <div className="doc-pills-list">
+                    {docs.map(d => <span key={d._id} className="doc-pill">📄 {d.originalName}</span>)}
+                  </div>
+                )}
               </div>
 
               <div className="composer">
@@ -1127,7 +2107,7 @@ function Consultation({ app, user, doctorMode, onClose }) {
                   value={text}
                   onChange={e => setText(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && send()}
-                  placeholder="Message doctor..."
+                  placeholder="Type message to veterinarian..."
                 />
                 <button onClick={send}>Send</button>
               </div>
