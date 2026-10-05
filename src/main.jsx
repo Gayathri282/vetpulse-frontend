@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { io } from "socket.io-client";
 import "./style.css";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const getToken = () => localStorage.getItem("token");
 
 async function api(path, opt = {}) {
@@ -1048,6 +1048,58 @@ function Login({ onLogin }) {
   });
   const [err, setErr] = useState("");
 
+  const handleGoogleCallback = async (response) => {
+    try {
+      const d = await api("/api/auth/google", {
+        method: "POST",
+        body: JSON.stringify({ credential: response.credential })
+      });
+      localStorage.setItem("token", d.token);
+      onLogin(d.user);
+    } catch (x) {
+      setErr("Google authentication failed: " + x.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const d = await api("/api/auth/google", {
+        method: "POST",
+        body: JSON.stringify({
+          email: "google_parent@vetpulse.demo",
+          name: "Google Pet Parent"
+        })
+      });
+      localStorage.setItem("token", d.token);
+      onLogin(d.user);
+    } catch (x) {
+      setErr(x.message);
+    }
+  };
+
+  useEffect(() => {
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (window.google?.accounts?.id && googleClientId && !googleClientId.includes("demo_google")) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: handleGoogleCallback
+        });
+        const targetDiv = document.getElementById("googleSignInDiv");
+        if (targetDiv) {
+          window.google.accounts.id.renderButton(targetDiv, {
+            theme: "outline",
+            size: "large",
+            width: "100%",
+            text: "continue_with"
+          });
+        }
+      } catch (e) {
+        console.warn("Google Sign-In init:", e);
+      }
+    }
+  }, []);
+
   const submit = async (e, customPayload) => {
     if (e) e.preventDefault();
     const payload = customPayload || f;
@@ -1120,8 +1172,32 @@ function Login({ onLogin }) {
             {register ? "Create Pet Parent Account" : "Sign In to Tele-Health Portal"}
           </h1>
           <p style={{ color: "var(--text-secondary)", margin: "0 0 20px", fontSize: "13.5px" }}>
-            Enter your credentials or click any demo role below for 1-click access.
+            Enter your credentials or use Google 1-click login below.
           </p>
+
+          {/* Google 1-Click Sign-In Options */}
+          <div style={{ marginBottom: "16px" }}>
+            <div id="googleSignInDiv" style={{ marginBottom: "8px" }}></div>
+            <button
+              type="button"
+              className="google-sign-in-btn"
+              onClick={handleGoogleSignIn}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18">
+                <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.617z"/>
+                <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+                <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+                <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+              </svg>
+              Continue with Google
+            </button>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "16px 0 20px", color: "var(--text-muted)", fontSize: "11.5px", fontWeight: "600" }}>
+            <div style={{ flex: 1, height: "1px", background: "var(--border-subtle)" }}></div>
+            <span>OR EMAIL SIGN IN</span>
+            <div style={{ flex: 1, height: "1px", background: "var(--border-subtle)" }}></div>
+          </div>
 
           <form onSubmit={submit}>
             {register && (
